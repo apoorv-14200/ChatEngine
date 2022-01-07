@@ -59,6 +59,6 @@ io.on("connection", function (socket) {
   });
 });
 
-app.get("/", (res, req) => {
-  res.send("Working Server");
+app.get("/", function (req, res) {
+  res.end("<h1>Working</h1>");
 });
