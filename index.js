@@ -59,6 +59,6 @@ io.on("connection", function (socket) {
   });
 });
 
-app.get("/", function (req, res) {
+app.get("/check", function (req, res) {
   res.end("<h1>Working</h1>");
 });
