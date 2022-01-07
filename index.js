@@ -19,16 +19,26 @@ if (socket_port == "" || socket_port == null) {
   socket_port = 8000;
 }
 
-app.use(cors());
+app.use(
+  require("access-control")({
+    credentials: true,
+    origins: [
+      "http://localhost:3000",
+      "https://powerful-hamlet-85569.herokuapp.com",
+    ],
+  })
+);
+
 const server = require("http").createServer(app);
-const io = require("socket.io")(server, (req, res) => {
-  const headers = {
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
-    "Access-Control-Allow-Credentials": true,
-  };
-  res.writeHead(200, headers);
-  res.end();
+const io = require("socket.io")(server, {
+  cors: {
+    origin: [
+      "http://localhost:3000",
+      "https://powerful-hamlet-85569.herokuapp.com",
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
 }).listen(socket_port);
 
 io.on("connection", function (socket) {
