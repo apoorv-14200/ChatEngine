@@ -20,20 +20,12 @@ if (socket_port == "" || socket_port == null) {
 }
 
 app.use(cors());
-
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-  next();
-});
-
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
+    credentials: true,
   },
 }).listen(socket_port);
 
@@ -57,8 +49,4 @@ io.on("connection", function (socket) {
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
-});
-
-app.get("/check", function (req, res) {
-  res.end("<h1>Working</h1>");
 });
