@@ -21,12 +21,14 @@ if (socket_port == "" || socket_port == null) {
 
 app.use(cors());
 const server = require("http").createServer(app);
-const io = require("socket.io")(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
+const io = require("socket.io")(server,handlePreflightRequest: (req, res) => {
+  const headers = {
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
+      "Access-Control-Allow-Credentials": true
+  };
+  res.writeHead(200, headers);
+  res.end();
 }).listen(socket_port);
 
 io.on("connection", function (socket) {
