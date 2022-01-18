@@ -1,8 +1,4 @@
-const bodyParser = require("body-parser");
 const express = require("express");
-const passport = require("passport");
-const cors = require("cors");
-const passportjwt = require("./config/passport-jwt-strategy");
 const app = express();
 const Like = require("./models/like");
 const Post = require("./models/post");
@@ -14,33 +10,35 @@ const Message = require("./models/message");
 
 const db = require("./config/mongoose");
 
-let socket_port = 3000;
-
-app.use(
-  require("access-control")({
-    credentials: true,
-    origins: [
-      "http://localhost:3000",
-      "http://powerful-hamlet-85569.herokuapp.com",
-    ],
-  })
-);
-
-app.get("/home", (req, res) => {
-  res.end("<h1>Working Socket</h1>");
-});
-
 const server = require("http").createServer(app);
+const cors = require("cors");
+
 const io = require("socket.io")(server, {
   cors: {
-    origin: [
-      "http://localhost:3000",
-      "http://powerful-hamlet-85569.herokuapp.com",
-    ],
+    origin: "*",
     methods: ["GET", "POST"],
-    credentials: true,
   },
-}).listen(socket_port);
+});
+
+app.use(cors());
+
+const PORT = process.env.PORT || 8000;
+
+app.get("/", (req, res) => {
+  res.send("Running");
+});
+
+// const server = require("http").createServer(app);
+// const io = require("socket.io")(server, {
+//   cors: {
+//     origin: [
+//       "http://localhost:3000",
+//       "http://powerful-hamlet-85569.herokuapp.com",
+//     ],
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   },
+// }).listen(socket_port);
 
 io.on("connection", function (socket) {
   console.log(socket.id);
@@ -63,3 +61,5 @@ io.on("connection", function (socket) {
     console.log("User disconnected");
   });
 });
+
+server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
