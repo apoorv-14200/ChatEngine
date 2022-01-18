@@ -16,7 +16,7 @@ const db = require("./config/mongoose");
 
 let socket_port = process.env.SOCKET;
 if (socket_port == "" || socket_port == null) {
-  socket_port = 8000;
+  socket_port = 3000;
 }
 
 app.use(
@@ -24,7 +24,7 @@ app.use(
     credentials: true,
     origins: [
       "http://localhost:3000",
-      "https://powerful-hamlet-85569.herokuapp.com",
+      "http://powerful-hamlet-85569.herokuapp.com",
     ],
   })
 );
@@ -34,7 +34,7 @@ const io = require("socket.io")(server, {
   cors: {
     origin: [
       "http://localhost:3000",
-      "https://powerful-hamlet-85569.herokuapp.com",
+      "http://powerful-hamlet-85569.herokuapp.com",
     ],
     methods: ["GET", "POST"],
     credentials: true,
