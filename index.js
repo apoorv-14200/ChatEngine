@@ -14,10 +14,7 @@ const Message = require("./models/message");
 
 const db = require("./config/mongoose");
 
-let socket_port = process.env.SOCKET;
-if (socket_port == "" || socket_port == null) {
-  socket_port = 3000;
-}
+let socket_port = 3000;
 
 app.use(
   require("access-control")({
@@ -28,6 +25,10 @@ app.use(
     ],
   })
 );
+
+app.get("/home", (req, res) => {
+  res.end("<h1>Working Socket</h1>");
+});
 
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
