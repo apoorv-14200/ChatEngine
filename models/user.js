@@ -22,6 +22,13 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
+    online: {
+      type: Boolean,
+      default: false,
+    },
+    socket_id: {
+      type: String,
+    },
     friends: [
       {
         type: mongoose.Schema.Types.ObjectId,

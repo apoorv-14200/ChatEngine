@@ -42,8 +42,22 @@ app.get("/", (req, res) => {
 
 io.on("connection", function (socket) {
   console.log(socket.id);
+  socket.on("make-user-online", async (user) => {
+    const cur = await User.findById(user._id);
+    if (cur) {
+      cur.online = true;
+      cur.socket_id = socket.id;
+      cur.save();
+      console.log(cur);
+      io.emit("user-onlined");
+    }
+    // console.log("User Onlined", user);
+  });
   socket.on("join_room", (room) => {
     socket.join(room);
+  });
+  socket.on("leave_room", (room) => {
+    socket.leave(room);
   });
   socket.on("send-message", async function (message, roomid) {
     console.log(message, roomid);
@@ -56,9 +70,25 @@ io.on("connection", function (socket) {
     conv.save();
     io.to(roomid).emit("receive-message", message);
   });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
+  socket.on("make-user-offline", async (user) => {
+    const cur = await User.findById(user._id);
+    if (cur) {
+      cur.online = false;
+      cur.save();
+      console.log(cur);
+      io.emit("user-offlined");
+    }
+    // console.log("User Offlined", user);
+  });
+  socket.on("disconnect", async () => {
+    const cur = await User.findOne({ socket_id: socket.id });
+    if (cur) {
+      cur.online = false;
+      cur.save();
+      io.emit("user-offlined");
+    }
+    // console.log("diconnected user", cur);
+    // console.log("Socket disconnected");
   });
 });
 
